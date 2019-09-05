@@ -96,6 +96,20 @@ func RegisterHandler(sign string, callback HandlerFunc) {
 type HandlerFunc func(v interface{}, req SassValue, res *SassValue) error
 
 func Handler(h HandlerFunc) libs.SassCallback {
+  return func(v interface{}, usv libs.UnionSassValue, rsv *libs.UnionSassValue) error {
+    if *rsv == nil {
+      *rsv = libs.MakeNil()
+    }
+    req := SassValue{value: usv}
+    res := SassValue{value: *rsv}
+    err := h(v, req, &res)
+    
+    if rsv != nil {
+      *rsv = res.Val()
+    }
+    
+    return err
+  }
 }
 
 type handler struct {
