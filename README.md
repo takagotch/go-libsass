@@ -99,11 +99,17 @@ func Handler(h HandlerFunc) libs.SassCallback {
 }
 
 type handler struct {
+  sign string
+  callback libs.SassCallback
 }
 
 var _ libs.SassCallback = TestCallback
 
-func testCallback() libs.SassCallback {}
+func testCallback() libs.SassCallback {
+  return func(v interface{}, _ libs.UnionSassValue, _ *libs.UnionSassValue) error {
+    return nil
+  }
+}
 
 var TestCallback = testCallback(func(_ interface{}, _ SassValue, _ *SassValue) error {
   return nil
